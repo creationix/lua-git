@@ -27,19 +27,32 @@ local mount = require('git').mount
 local db = mount(makeChroot("path/to/.git"))
 
 --[[
-db.has(hash) -> bool                   - check if db has an object
-db.load(hash) -> raw                   - load raw data, nil if not found
-db.loadAny(hash) -> kind, value        - pre-decode data, error if not found
-db.loadAs(kind, hash) -> value         - pre-decode and check type or error
-db.save(raw) -> hash                   - save pre-encoded and framed data
-db.saveAs(kind, value) -> hash         - encode, frame and save to objects/$ha/$sh
-db.hashes() -> iter                    - Iterate over all hashes
+db.has(hash) -> bool             - check if db has an object
+db.load(hash) -> raw             - load raw data, nil if not found
+db.loadAny(hash) -> kind, value  - pre-decode data, error if not found
+db.loadAs(kind, hash) -> value   - pre-decode and check type or error
+db.save(raw) -> hash             - save pre-encoded and framed data
+db.saveAs(kind, value) -> hash   - encode, frame and save to objects/$ha/$sh
+db.hashes() -> iter              - Iterate over all hashes
 
-db.getHead() -> hash                   - Read the hash via HEAD
-db.getRef(ref) -> hash                 - Read hash of a ref
-db.resolve(ref) -> hash                - Given a hash, tag, branch, or HEAD, return the hash
-db.nodes(prefix) -> iter               - iterate over non-leaf refs
-db.leaves(prefix) -> iter              - iterate over leaf refs
+db.getHead() -> hash             - Read the hash via HEAD
+db.getRef(ref) -> hash           - Read hash of a ref
+db.resolve(ref) -> hash          - Resolve hash, tag, branch, or "HEAD" to hash
+db.nodes(prefix) -> iter         - iterate over non-leaf refs
+db.leaves(prefix) -> iter        - iterate over leaf refs
+
+db.storage                       - table containing storage interface.
+
+storage.write(path, raw)         - Write mutable data by path
+storage.put(path, raw)           - Write immutable data by path
+storage.read(path) -> raw        - Read mutable data by path (nil if not found)
+storage.delete(path)             - Delete an entry (removes empty parent dirs)
+storage.nodes(path) -> iter      - Iterate over node children of path
+                                   (empty iter if not found)
+storage.leaves(path) -> iter     - Iterate over node children of path
+                                   (empty iter if not found)
+
+storage.fs                       - The fs instance originally passed in.
 ]]
 ```
 
