@@ -39,11 +39,11 @@ local encoders = core.encoders
 local decoders = core.decoders
 local frame = core.frame
 local deframe = core.deframe
+local binToHex = core.binToHex
+local hexToBin = core.hexToBin
 local deflate = miniz.deflate
 local inflate = miniz.inflate
 local digest = openssl.digest.digest
-local binToHex = hexBin.binToHex
-local hexToBin = hexBin.hexToBin
 
 local band = bit.band
 local bor = bit.bor

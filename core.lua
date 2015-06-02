@@ -9,6 +9,30 @@ local modes = {
 }
 modes.file = modes.blob
 exports.modes = modes
+local encoders = {}
+exports.encoders = encoders
+local decoders = {}
+exports.decoders = decoders
+
+-- Given a raw character, return two hex characters
+local function binToHex(c)
+  return string.format("%02x", string.byte(c, 1))
+end
+
+exports.binToHex = function(bin)
+  local hex = string.gsub(bin, ".", binToHex)
+  return hex
+end
+
+-- Given two hex characters, return a single character
+local function hexToBin(cc)
+  return string.char(tonumber(cc, 16))
+end
+
+exports.hexToBin = function (hex)
+  local bin = string.gsub(hex, "..", hexToBin)
+  return bin
+end
 
 function modes.isBlob(mode)
   -- (mode & 0140000) == 0100000
@@ -30,26 +54,11 @@ function modes.toType(mode)
          "unknown"
 end
 
-local encoders = {}
-exports.encoders = encoders
-local decoders = {}
-exports.decoders = decoders
-
-
 local function treeSort(a, b)
   return ((a.mode == modes.tree) and (a.name .. "/") or a.name)
        < ((b.mode == modes.tree) and (b.name .. "/") or b.name)
 end
 
--- Given two hex characters, return a single character
-local function hexToBin(cc)
-  return string.char(tonumber(cc, 16))
-end
-
--- Given a raw character, return two hex characters
-local function binToHex(c)
-  return string.format("%02x", string.byte(c, 1))
-end
 
 -- Remove illegal characters in things like emails and names
 local function safe(text)
