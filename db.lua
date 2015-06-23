@@ -124,7 +124,7 @@ local function applyDelta(base, delta) --> raw
     elseif b > 0 then
       -- Insert command, opcode byte is length itself
       parts[#parts + 1] = sub(delta, deltaOffset + 1, deltaOffset + b)
-      deltaOffset = deltaOffset + byte
+      deltaOffset = deltaOffset + b
     else
       error("Invalid opcode in delta")
     end
@@ -476,13 +476,16 @@ return function (storage)
   local function commonIter(iter1, iter2)
     local seen = {}
     return function ()
-      local item = iter1()
-      if item then
-        seen[item] = true
-        return item
+      if iter1 then
+        local item =iter1()
+        if item then
+          seen[item] = true
+          return item
+        end
+        iter1 = nil
       end
       while true do
-        item = iter2()
+        local item = iter2()
         if not item then return end
         if not seen[item] then
           seen[item] = true
