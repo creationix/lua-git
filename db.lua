@@ -23,7 +23,6 @@ db.leaves(prefix) -> iter              - iterate over leaf refs
 local core = require('./core')
 local miniz = require('miniz')
 local openssl = require('openssl')
-local hexBin = require('hex-bin')
 local uv = require('uv')
 
 local numToType = {
