@@ -169,13 +169,15 @@ function encoders.tag(tag)
 end
 
 function decoders.tag(raw)
-  local s, _, message = string.find(raw, "\n\n(.*)$", 1)
+  local s, e, _, message
+  s, _, message = string.find(raw, "\n\n(.*)$", 1)
   raw = string.sub(raw, 1, s)
   local start = 1
   local pattern = "^([^ ]+) ([^\n]+)\n"
   local data = {message=message}
   while true do
-    local s, e, name, value = string.find(raw, pattern, start)
+    local name, value
+    s, e, name, value = string.find(raw, pattern, start)
     if not s then break end
     if name == "tagger" then
       value = parsePerson(value)
@@ -207,14 +209,16 @@ function encoders.commit(commit)
 end
 
 function decoders.commit(raw)
-  local s, _, message = string.find(raw, "\n\n(.*)$", 1)
+  local s, e, _, message
+  s, _, message = string.find(raw, "\n\n(.*)$", 1)
   raw = string.sub(raw, 1, s)
   local start = 1
   local pattern = "^([^ ]+) ([^\n]+)\n"
   local parents = {}
   local data = {message=message,parents=parents}
   while true do
-    local s, e, name, value = string.find(raw, pattern, start)
+    local name, value
+    s, e, name, value = string.find(raw, pattern, start)
     if not s then break end
     if name == "author" or name == "committer" then
       value = parsePerson(value)
