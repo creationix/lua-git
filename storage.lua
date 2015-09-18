@@ -27,19 +27,8 @@ return function (fs)
   function storage.write(path, data)
     local fd, success, err
     local tempPath = path .. "~"
-    local tried = false
-    while true do
-      -- Try to open the file in write mode.
-      fd, err = fs.open(tempPath, "w")
-      if fd then break end
-      if not tried and err:match("^ENOENT:") then
-        -- If it doesn't exist, try to make the parent directory.
-        assert(fs.mkdirp(dirname(path)))
-        tried = true
-      else
-        assert(nil, err)
-      end
-    end
+    assert(fs.mkdirp(dirname(path)))
+    fd = assert(fs.open(tempPath, "w"))
     success, err = fs.write(fd, data)
     if success then
       success, err = fs.fchmod(fd, 384)
@@ -54,22 +43,8 @@ return function (fs)
   -- Write immutable data with an exclusive open.
   function storage.put(path, data)
     local fd, success, err
-    local tried = false
-    while true do
-      -- Try to open the file in exclusive write mode.
-      fd, err = fs.open(path, "wx")
-      if fd then break end
-      if err:match("^EEXIST:") then
-        -- If it already exists, do nothing, it's immutable.
-        return
-      elseif not tried and err:match("^ENOENT:") then
-        -- If it doesn't exist, try to make the parent directory.
-        assert(fs.mkdirp(dirname(path)))
-        tried = true
-      else
-        assert(nil, err)
-      end
-    end
+    assert(fs.mkdirp(dirname(path)))
+    fd = assert(fs.open(path, "wx"))
     success, err = fs.write(fd, data)
     if success then
       success, err = fs.fchmod(fd, 256)
