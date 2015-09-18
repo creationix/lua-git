@@ -25,19 +25,19 @@ return function (fs)
 
   -- Perform an atomic write (with temp file and rename) for mutable data
   function storage.write(path, data)
-    local fd, success, err
-    local tempPath = path .. "~"
+    -- Ensure the parent directory exists first.
     assert(fs.mkdirp(dirname(path)))
-    fd = assert(fs.open(tempPath, "w"))
-    success, err = fs.write(fd, data)
-    if success then
-      success, err = fs.fchmod(fd, 384)
+    -- Write the data out to a temporary file.
+    local tempPath = path .. "~"
+    do
+      local fd, success, err
+      fd = assert(fs.open(tempPath, "w", 384))
+      success, err = fs.write(fd, data)
+      fs.close(fd)
+      assert(success, err)
     end
-    fs.close(fd)
-    if success then
-      success, err = fs.rename(tempPath, path)
-    end
-    assert(success, err)
+    -- Rename the temp file on top of the old file for atomic commit.
+    assert(fs.rename(tempPath, path))
   end
 
   -- Write immutable data with an exclusive open.
