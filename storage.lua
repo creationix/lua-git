@@ -44,7 +44,12 @@ return function (fs)
   function storage.put(path, data)
     local fd, success, err
     assert(fs.mkdirp(dirname(path)))
-    fd = assert(fs.open(path, "wx"))
+    fd, err = fs.open(path, "wx")
+    if not fd then
+      -- If the file already exists, do nothing, it's immutable.
+      if err:match("^EEXIST:") then return end
+      error(err)
+    end
     success, err = fs.write(fd, data)
     if success then
       success, err = fs.fchmod(fd, 256)
