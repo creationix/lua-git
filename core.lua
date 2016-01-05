@@ -1,5 +1,5 @@
 
-
+local exports = {}
 local modes = {
   tree   = 16384, --  040000
   blob   = 33188, -- 0100644
@@ -264,3 +264,5 @@ function exports.mapToList(map)
   end
   return list
 end
+
+return exports
