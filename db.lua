@@ -314,7 +314,7 @@ return function (storage)
       -- Optionally parse out the hash or offset for deltas
       local ref
       if kind == "ref-delta" then
-        ref = binToHex(chunk:sub(i + 1, i + 20))
+        ref = binToHex(chunk:sub(i, i + 19))
         i = i + 20
       elseif kind == "ofs-delta" then
         b = byte(chunk, i)
@@ -333,7 +333,9 @@ return function (storage)
       assert(#raw == size, "inflate error or size mismatch at offset " .. offset)
 
       if kind == "ref-delta" then
-        error("TODO: handle ref-delta")
+        local base
+        kind, base = deframe(db.load(ref))
+        raw = applyDelta(base, raw)
       elseif kind == "ofs-delta" then
         local base
         kind, base = loadRaw(offset - ref)
