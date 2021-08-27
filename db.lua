@@ -327,7 +327,9 @@ return function (storage)
         end
       end
 
-      local compressed = assert(fs.read(packFd, length or size*2, offset + i - 1))
+      -- Guess an upper bound for the compressed data.
+      local guessedSize = math.max(100, (length or size) * 2)
+      local compressed = assert(fs.read(packFd, guessedSize, offset + i - 1))
       local raw = inflate(compressed, 1)
 
       if #raw ~= size then
