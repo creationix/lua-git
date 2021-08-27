@@ -327,10 +327,12 @@ return function (storage)
         end
       end
 
-      local compressed = assert(fs.read(packFd, length, offset + i - 1))
+      local compressed = assert(fs.read(packFd, length or size*2, offset + i - 1))
       local raw = inflate(compressed, 1)
 
-      assert(#raw == size, "inflate error or size mismatch at offset " .. offset)
+      if #raw ~= size then
+        error("inflate error or size mismatch at offset " .. offset)
+      end
 
       if kind == "ref-delta" then
         local base
