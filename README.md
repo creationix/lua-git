@@ -21,8 +21,10 @@ The `fs` interface is required to implement the same API as a coro-fs chroot tha
 is rooted at the database root.
 
 ```lua
-local makeChroot = require('coro-fs').chroot
-local mount = require('git').mount
+local import = _G.import or require
+
+local makeChroot = import('coro-fs').chroot
+local mount = import('git').mount
 
 local db = mount(makeChroot("path/to/.git"))
 

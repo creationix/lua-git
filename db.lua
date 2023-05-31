@@ -19,8 +19,9 @@ db.resolve(ref) -> hash                - Given a hash, tag, branch, or HEAD, ret
 db.nodes(prefix) -> iter               - iterate over non-leaf refs
 db.leaves(prefix) -> iter              - iterate over leaf refs
 ]]
+local import = _G.import or require
 
-local core = require('./core')
+local core = import('./core')
 local miniz = require('miniz')
 local openssl = require('openssl')
 local uv = require('uv')

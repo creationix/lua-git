@@ -1,10 +1,12 @@
-local core = require('../core')
+local import = _G.import or require
+
+local core = import('../core')
 local encoders = core.encoders
 local decoders = core.decoders
 local frame = core.frame
 local deframe = core.deframe
 local modes = core.modes
-local dump = require('pretty-print').dump
+local dump = import('pretty-print').dump
 
 local tests = {
   "blob", "Hello World\n", "Hello World\n",
